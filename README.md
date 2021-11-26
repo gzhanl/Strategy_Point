@@ -19,3 +19,16 @@ df['最高价_复权'] = df['最高价'] / df['收盘价'] * df['收盘价_复�
 df['最低价_复权'] = df['最低价'] / df['收盘价'] * df['收盘价_复权']
 df.drop(['复权因子'], axis=1, inplace=True)
 ```
+
+## 计算涨跌停价格 (结果是三位小数，后面要四舍五入处理) ##
+```python
+df['涨停价'] = df['前收盘价'] * 1.1
+df['跌停价'] = df['前收盘价'] * 0.9
+```
+
+## 四舍五入注意事项 ##
+```python
+# print(round(3.5), round(4.5))  # 银行家舍入法：四舍六进，五，奇进偶不进(小数点前一位)
+df['涨停价'] = df['涨停价'].apply(lambda x: float(Decimal(x*100).quantize(Decimal('1'), rounding=ROUND_HALF_UP) / 100))
+df['跌停价'] = df['跌停价'].apply(lambda x: float(Decimal(x*100).quantize(Decimal('1'), rounding=ROUND_HALF_UP) / 100))
+```
